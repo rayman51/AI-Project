@@ -1,0 +1,45 @@
+FUNCTION_BLOCK Fight
+
+	VAR_INPUT
+	 health : REAL;
+	 durability : Real;
+	END_VAR
+	
+	VAR_OUTPUT
+	 fight : REAL;
+	END_VAR
+	
+	FUZZIFY health
+	 TERM low := (0, 1) (30, 1) (45, 0);
+	 TERM medium := trian 35 50 65;
+	 TERM high := (50, 0) (70, 1) (100, 1);
+	END_FUZZIFY
+	
+	FUZZIFY durability
+	 TERM low := (0, 1) (1, 1) (2, 0);
+	 TERM medium := trian 2 3 4;
+	 TERM high := (3, 0) (4, 1) (5, 1);
+	END_FUZZIFY
+	
+	
+	DEFUZZIFY fight
+	 TERM run := (0, 1) (55, 0);
+	 TERM attack := (45,0) (60,1) (100, 1);
+	 METHOD : COG;
+	 DEFAULT := 0;
+	END_DEFUZZIFY
+	
+	RULEBLOCK No1
+	 AND : MIN;
+	 ACT : MIN;
+	 ACCU : MAX;
+	 RULE 1 : IF health IS low THEN fight IS attack;
+	 RULE 2 : IF health IS medium OR durability IS medium THEN fight IS attack;
+	 RULE 3 : IF health IS high AND durability  IS high THEN fight IS run;
+	 RULE 4 : IF health IS medium AND durability IS high THEN fight is run;
+	 RULE 5 : IF health IS medium OR durability IS low THEN fight is attack;
+	 
+
+	END_RULEBLOCK
+	
+END_FUNCTION_BLOCK
